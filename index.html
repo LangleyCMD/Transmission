@@ -574,10 +574,10 @@ Oczekiwanie na dalsze polecenia.`;
         } else {
           let target = args[1];
           let newPath;
+/* ===== KEYLOGGER PATTERN LOCK ===== */
 
-          /* === BLOKADA KEYLOGGER === */
+if (newPath === "/logs/keylogger" && !patternWaiting) {
 
-if(newPath === '/logs/keylogger'){
   patternWaiting = true;
   pendingKeyloggerPath = newPath;
 
@@ -585,11 +585,12 @@ if(newPath === '/logs/keylogger'){
 
   output.textContent += `
 ${currentPath}> ${input}
->>> BLOKADA WZORCEM — użyj panelu kliknięć`;
+>>> BLOKADA WZORCEM — kliknij sekwencję`;
 
-  commandInput.value = '';
+  commandInput.value = "";
   updatePrompt();
   window.scrollTo(0, document.body.scrollHeight);
+
   return;
 }
 
@@ -603,9 +604,6 @@ ${currentPath}> ${input}
           }
 
           if (newPath === '/secure' && !secureUnlocked) {
-
-
-
             
             awaitingPassword = true;
             output.textContent += `\n${currentPath}> ${input}\nPodaj hasło:`;
