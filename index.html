@@ -575,6 +575,25 @@ Oczekiwanie na dalsze polecenia.`;
           let target = args[1];
           let newPath;
 
+          /* === BLOKADA KEYLOGGER === */
+
+if(newPath === '/logs/keylogger'){
+  patternWaiting = true;
+  pendingKeyloggerPath = newPath;
+
+  patternUI.style.display = "block";
+
+  output.textContent += `
+${currentPath}> ${input}
+>>> BLOKADA WZORCEM — użyj panelu kliknięć`;
+
+  commandInput.value = '';
+  updatePrompt();
+  window.scrollTo(0, document.body.scrollHeight);
+  return;
+}
+
+
           if (target === '..') {
             newPath = normalizePath(currentPath + '/..');
           } else if (target.startsWith('/')) {
@@ -585,23 +604,6 @@ Oczekiwanie na dalsze polecenia.`;
 
           if (newPath === '/secure' && !secureUnlocked) {
 
-            /* === BLOKADA KEYLOGGER === */
-
-if(newPath.endsWith('/keylogger')){
-  patternWaiting = true;
-  pendingKeyloggerPath = newPath;
-
-  patternUI.style.display="block";
-
-  output.textContent += `
-${currentPath}> ${input}
->>> BLOKADA WZORCEM — użyj panelu kliknięć`;
-
-  commandInput.value='';
-  updatePrompt();
-  window.scrollTo(0,document.body.scrollHeight);
-  return;
-}
 
 
             
