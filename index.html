@@ -131,6 +131,23 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>LANGLEY CALLING</title>
   <style>
+    .pattern-grid {
+  display:grid;
+  grid-template-columns:repeat(3,70px);
+  gap:8px;
+  margin-top:10px;
+}
+
+.p-cell {
+  width:70px;
+  height:70px;
+  border:2px solid #00ff66;
+  cursor:pointer;
+}
+
+.p-cell.active { background:#00ff66; }
+.p-cell.error { background:#330000; }
+
     body {
       background-color: #000;
       color: #00ff66;
@@ -240,6 +257,22 @@
   <div id="input-line">
     <span id="prompt"></span><input type="text" id="commandInput" autocomplete="off" autofocus />
   </div>
+  
+  <div id="patternLock" style="display:none; margin-top:20px;">
+  <div>>> BLOKADA WZORCEM — kliknij poprawną sekwencję</div>
+  <div class="pattern-grid">
+    <div class="p-cell" data-id="0"></div>
+    <div class="p-cell" data-id="1"></div>
+    <div class="p-cell" data-id="2"></div>
+    <div class="p-cell" data-id="3"></div>
+    <div class="p-cell" data-id="4"></div>
+    <div class="p-cell" data-id="5"></div>
+    <div class="p-cell" data-id="6"></div>
+    <div class="p-cell" data-id="7"></div>
+    <div class="p-cell" data-id="8"></div>
+  </div>
+</div>
+
 
 <script>
   const PASSWORD = 'X7f9P2z';
@@ -549,6 +582,24 @@ Oczekiwanie na dalsze polecenia.`;
           }
 
           if (newPath === '/secure' && !secureUnlocked) {
+            // ===== KEYLOGGER LOCK =====
+
+if(newPath.endsWith('/keylogger')){
+  patternWaiting = true;
+  pendingKeyloggerPath = newPath;
+
+  patternUI.style.display="block";
+
+  output.textContent += `
+${currentPath}> ${input}
+>>> BLOKADA WZORCEM — użyj panelu kliknięć`;
+
+  commandInput.value='';
+  updatePrompt();
+  window.scrollTo(0,document.body.scrollHeight);
+  return;
+}
+
             awaitingPassword = true;
             output.textContent += `\n${currentPath}> ${input}\nPodaj hasło:`;
             commandInput.value = '';
@@ -604,6 +655,66 @@ Wpisz 'help' by wyświetlić dostępne polecenia.`;
       window.scrollTo(0, document.body.scrollHeight);
     }
   });
+  /* ===== PATTERN LOCK ===== */
+
+const patternCorrect = [0,4,8];
+let patternInput = [];
+let patternWaiting = false;
+let pendingKeyloggerPath = null;
+
+const patternUI = document.getElementById("patternLock");
+
+document.querySelectorAll(".p-cell").forEach(cell=>{
+  cell.addEventListener("click",()=>{
+    if(!patternWaiting) return;
+
+    const id = parseInt(cell.dataset.id);
+    cell.classList.add("active");
+    patternInput.push(id);
+
+    checkPattern();
+  });
+});
+
+function checkPattern(){
+  let step = patternInput.length-1;
+
+  if(patternInput[step] !== patternCorrect[step]){
+    patternError();
+    return;
+  }
+
+  if(patternInput.length === patternCorrect.length){
+    unlockPattern();
+  }
+}
+
+function patternError(){
+  document.querySelectorAll(".p-cell").forEach(c=>c.classList.add("error"));
+
+  setTimeout(resetPattern,700);
+}
+
+function unlockPattern(){
+  patternWaiting = false;
+  patternUI.style.display="none";
+
+  currentPath = pendingKeyloggerPath;
+  pendingKeyloggerPath = null;
+
+  output.textContent += "\n>>> BLOKADA ZDJĘTA — DOSTĘP PRZYZNANY";
+  updatePrompt();
+  window.scrollTo(0,document.body.scrollHeight);
+
+  resetPattern();
+}
+
+function resetPattern(){
+  patternInput=[];
+  document.querySelectorAll(".p-cell")
+    .forEach(c=>c.classList.remove("active","error"));
+}
+
 </script>
 </body>
 </html>
