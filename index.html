@@ -576,7 +576,7 @@ Oczekiwanie na dalsze polecenia.`;
           let newPath;
 /* ===== KEYLOGGER PATTERN LOCK ===== */
 
-if (newPath === "/logs/keylogger" && !patternWaiting) {
+if(newPath.endsWith("/keylogger")){
 
   patternWaiting = true;
   pendingKeyloggerPath = newPath;
@@ -585,7 +585,7 @@ if (newPath === "/logs/keylogger" && !patternWaiting) {
 
   output.textContent += `
 ${currentPath}> ${input}
->>> BLOKADA WZORCEM — kliknij sekwencję`;
+>>> BLOKADA WZORCEM`;
 
   commandInput.value = "";
   updatePrompt();
