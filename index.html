@@ -131,23 +131,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>LANGLEY CALLING</title>
   <style>
-    .pattern-grid {
-  display:grid;
-  grid-template-columns:repeat(3,70px);
-  gap:8px;
-  margin-top:10px;
-}
-
-.p-cell {
-  width:70px;
-  height:70px;
-  border:2px solid #00ff66;
-  cursor:pointer;
-}
-
-.p-cell.active { background:#00ff66; }
-.p-cell.error { background:#330000; }
-
     body {
       background-color: #000;
       color: #00ff66;
@@ -246,6 +229,24 @@
       width: calc(100% - 10ch);
       display: inline;
     }
+
+    .pattern-grid {
+  display:grid;
+  grid-template-columns:repeat(3,70px);
+  gap:8px;
+  margin-top:10px;
+}
+
+.p-cell {
+  width:70px;
+  height:70px;
+  border:2px solid #00ff66;
+  cursor:pointer;
+}
+
+.p-cell.active { background:#00ff66; }
+.p-cell.error { background:#330000; }
+
   </style>
 </head>
 <body>
@@ -260,6 +261,7 @@
   
   <div id="patternLock" style="display:none; margin-top:20px;">
   <div>>> BLOKADA WZORCEM — kliknij poprawną sekwencję</div>
+
   <div class="pattern-grid">
     <div class="p-cell" data-id="0"></div>
     <div class="p-cell" data-id="1"></div>
@@ -582,7 +584,8 @@ Oczekiwanie na dalsze polecenia.`;
           }
 
           if (newPath === '/secure' && !secureUnlocked) {
-            // ===== KEYLOGGER LOCK =====
+
+            /* === BLOKADA KEYLOGGER === */
 
 if(newPath.endsWith('/keylogger')){
   patternWaiting = true;
@@ -600,6 +603,8 @@ ${currentPath}> ${input}
   return;
 }
 
+
+            
             awaitingPassword = true;
             output.textContent += `\n${currentPath}> ${input}\nPodaj hasło:`;
             commandInput.value = '';
@@ -655,6 +660,7 @@ Wpisz 'help' by wyświetlić dostępne polecenia.`;
       window.scrollTo(0, document.body.scrollHeight);
     }
   });
+
   /* ===== PATTERN LOCK ===== */
 
 const patternCorrect = [0,4,8];
